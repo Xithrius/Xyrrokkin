@@ -1,9 +1,18 @@
 [package]
 name = "Xyrrokkin"
 version = "0.1.0"
+authors = ["Xithrius <xithrius@gmail.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "GitHub bot for differences in file content after merges."
+documentation = "https://github.com/Xithrius/Xyrrokkin"
+homepage = "https://github.com/Xithrius/Xyrrokkin"
+repository = "https://github.com/Xithrius/Xyrrokkin"
+license = "MIT OR Apache-2.0"
 
 [dependencies]
+octocrab = "0.13.0"
 
+[[bin]]
+bench = false
+path = "src/main.rs"
+name = "xyrrokkin"
