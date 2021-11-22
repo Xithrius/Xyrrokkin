@@ -10,7 +10,7 @@ repository = "https://github.com/Xithrius/Xyrrokkin"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-octocrab = "0.13.0"
+octocrab = "0.14.0"
 
 [[bin]]
 bench = false
