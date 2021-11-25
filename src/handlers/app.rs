@@ -25,7 +25,10 @@ impl App {
         let jwt = create_jwt(AppId(config.application_id), &key).unwrap();
 
         let mut headers = header::HeaderMap::new();
-        headers.insert(header::ACCEPT, header::HeaderValue::from_str("application/vnd.github.v3+json").unwrap());
+        headers.insert(
+            header::ACCEPT,
+            header::HeaderValue::from_str("application/vnd.github.v3+json").unwrap(),
+        );
 
         let mut auth_value = header::HeaderValue::from_str(&format!("Bearer {}", jwt)).unwrap();
 
