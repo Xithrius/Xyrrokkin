@@ -11,20 +11,7 @@ env:
 
 jobs:
   build-test:
-    strategy:
-      fail-fast: false
-
-      matrix:
-        os:
-          - { prettyname: Windows, fullname: windows-latest }
-          - { prettyname: macOS, fullname: macos-latest }
-          - { prettyname: Linux, fullname: ubuntu-latest }
-
-        threadingMode: [ 'MultiThreaded' ]
-
-    timeout-minutes: 60
-
-    runs-on: ${{matrix.os.fullname}}
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
