@@ -1,48 +1,53 @@
 use std::collections::HashMap;
 
-use term_table::{
-    row::Row,
-    table_cell::{Alignment, TableCell},
-};
+use crate::handlers::files::FileData;
 
-pub fn diff_to_table(hunk: String) -> String {
-    let hunk_vec = hunk
-        .split('\n')
-        .filter_map(|s| parse_file_type(s))
-        .collect::<Vec<&str>>();
+/// Getting stats on different types of files that have been changed.
+/// Documentation how diffs are formatted:
+/// https://git-scm.com/docs/git-diff#_combined_diff_format
+pub fn parse_diff(hunk: String) -> Vec<FileData> {
+    let vec_hunk = hunk.split('\n').collect::<Vec<&str>>();
 
-    let mut file_type_counts: HashMap<String, usize> = HashMap::new();
+    let mut data: HashMap<Option<String>, FileData> = HashMap::new();
 
-    for item in hunk_vec.iter() {
-        let counter = file_type_counts.entry(item.to_string()).or_insert(0);
-        *counter += 1;
-    }
+    for i in 0..=vec_hunk.len() {
+        let current_item = vec_hunk[i];
 
-    let mut table = term_table::Table::new();
+        if current_item.starts_with("diff --git") {
+            let file_type: Option<String> = if current_item.contains('.') {
+                Some(current_item.split('.').last().unwrap().to_string())
+            } else {
+                None
+            };
 
-    table.max_column_width = 10;
-    table.style = term_table::TableStyle::rounded();
+            let file_data = FileData::new(
+                file_type.clone(),
+                1,
+                if vec_hunk[i + 1].starts_with("new file mode") {
+                    1
+                } else {
+                    0
+                },
+                if vec_hunk[i + 1].starts_with("deleted file mode") {
+                    1
+                } else {
+                    0
+                },
+                0,
+                0,
+            );
 
-    for (k, v) in file_type_counts.iter() {
-        table.add_row(Row::new(vec![
-            TableCell::new_with_alignment(k, 1, Alignment::Right),
-            TableCell::new_with_alignment(v, 1, Alignment::Left),
-        ]));
-    }
+            if data.contains_key(&file_type) {
+                let mut single_value = data.get_mut(&file_type).unwrap();
 
-    table.render()
-}
-
-fn parse_file_type(s: &str) -> Option<&str> {
-    if s.starts_with("diff --git") {
-        let current_file = s.split("b/").last().unwrap();
-
-        if current_file.contains('.') {
-            Some(current_file.split('.').last().unwrap())
-        } else {
-            None
+                single_value += file_data;
+            }
         }
-    } else {
-        None
     }
+
+    let mut data_values = data.into_values().collect::<Vec<FileData>>();
+
+    data_values.sort_by(|a, b| b.amount.cmp(&a.amount));
+
+    data_values
 }
