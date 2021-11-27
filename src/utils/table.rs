@@ -5,7 +5,7 @@ pub fn create_markdown_table(titles: Vec<String>, mut data: Vec<Vec<String>>) ->
     data.insert(0, titles);
 
     format!(
-        "<table>{}</table>",
+        "<details><summary>Summary of changed files</summary><table>{}</table></details>",
         data.iter()
             .map(|v| {
                 format!(
