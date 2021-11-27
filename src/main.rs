@@ -9,7 +9,10 @@ use reqwest::header;
 mod handlers;
 mod utils;
 
-use crate::{handlers::app::App, utils::diff::parse_diff};
+use crate::{
+    handlers::app::App,
+    utils::{diff::parse_diff, table::create_markdown_table},
+};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
@@ -90,10 +93,18 @@ async fn index(
                     .await
                     .unwrap();
 
-                // TODO: Parse diff, then put into markdown table.
-                let _diff_data = parse_diff(diff_raw);
-
-                let json_data = json::stringify(json::object! {"body": "Placeholder value"});
+                let table = create_markdown_table(
+                    vec![
+                        "Extension".to_string(),
+                        "Total".to_string(),
+                        "New".to_string(),
+                        "Deleted".to_string(),
+                    ],
+                    parse_diff(diff_raw)
+                        .iter()
+                        .map(|v| v.to_vec())
+                        .collect::<Vec<Vec<String>>>(),
+                );
 
                 let comment_response = app
                     .client
@@ -102,7 +113,7 @@ async fn index(
                         header::AUTHORIZATION,
                         format!("token {}", installation_token.token),
                     )
-                    .body(json_data)
+                    .body(json::stringify(json::object! {"body": table}))
                     .send()
                     .await
                     .unwrap();

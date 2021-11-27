@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{hash_map::Entry::Vacant, HashMap};
 
 use crate::handlers::files::FileData;
 
@@ -10,12 +10,12 @@ pub fn parse_diff(hunk: String) -> Vec<FileData> {
 
     let mut data: HashMap<Option<String>, FileData> = HashMap::new();
 
-    for i in 0..=vec_hunk.len() {
-        let current_item = vec_hunk[i];
+    for i in 0..vec_hunk.len() {
+        let item = vec_hunk[i];
 
-        if current_item.starts_with("diff --git") {
-            let file_type: Option<String> = if current_item.contains('.') {
-                Some(current_item.split('.').last().unwrap().to_string())
+        if item.starts_with("diff --git") {
+            let file_type: Option<String> = if item.contains('.') {
+                Some(item.split('.').last().unwrap().to_string())
             } else {
                 None
             };
@@ -33,14 +33,12 @@ pub fn parse_diff(hunk: String) -> Vec<FileData> {
                 } else {
                     0
                 },
-                0,
-                0,
             );
 
-            if data.contains_key(&file_type) {
-                let mut single_value = data.get_mut(&file_type).unwrap();
-
-                single_value += file_data;
+            if let Vacant(e) = data.entry(file_type.clone()) {
+                e.insert(file_data);
+            } else {
+                *data.get_mut(&file_type).unwrap() += file_data;
             }
         }
     }
