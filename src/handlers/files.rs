@@ -8,29 +8,29 @@ pub struct FileData {
     pub new: usize,
     /// How many times this type has been deleted
     pub deleted: usize,
-    /// Number of files that have become this type
-    pub to: usize,
-    /// Occurrences in which files used to be this type
-    pub from: usize,
 }
 
 impl FileData {
-    pub fn new(
-        ext: Option<String>,
-        amount: usize,
-        new: usize,
-        deleted: usize,
-        to: usize,
-        from: usize,
-    ) -> Self {
+    pub fn new(ext: Option<String>, amount: usize, new: usize, deleted: usize) -> Self {
         Self {
             ext,
             amount,
             new,
             deleted,
-            to,
-            from,
         }
+    }
+
+    pub fn to_vec(&self) -> Vec<String> {
+        vec![
+            if let Some(e) = self.ext.clone() {
+                e
+            } else {
+                "None".to_string()
+            },
+            self.amount.to_string(),
+            self.new.to_string(),
+            self.deleted.to_string(),
+        ]
     }
 }
 
@@ -41,8 +41,6 @@ impl std::ops::AddAssign for FileData {
             self.amount + other.amount,
             self.new + other.new,
             self.deleted + other.deleted,
-            self.to + other.to,
-            self.from + other.from
         );
     }
 }
