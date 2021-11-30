@@ -42,7 +42,7 @@ async fn index(
     if let PullRequestEventAction::Closed = &response.action {
         if let Some(_merged_time) = response.pull_request.merged_at {
             // Get all the places that the app is installed.
-            let installations: Vec<Installation> = app
+            let installations: Box<Vec<Installation>> = app
                 .client
                 .get("https://api.github.com/app/installations")
                 .send()
