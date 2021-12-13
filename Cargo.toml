@@ -10,7 +10,7 @@ repository = "https://github.com/Xithrius/Xyrrokkin"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-actix-web = {version = "4.0.0-beta.13", features = ["openssl"]}
+actix-web = {version = "4.0.0-beta.14", features = ["openssl"]}
 octocrab = "0.15.0"
 toml = "0.5.8"
 serde = { version = "1.0.131", features = ["derive"] }
