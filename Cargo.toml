@@ -11,7 +11,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 actix-web = {version = "4.0.0-beta.15", features = ["openssl"]}
-octocrab = "0.15.0"
+octocrab = "0.15.2"
 toml = "0.5.8"
 serde = { version = "1.0.132", features = ["derive"] }
 anyhow = "1.0.50"
